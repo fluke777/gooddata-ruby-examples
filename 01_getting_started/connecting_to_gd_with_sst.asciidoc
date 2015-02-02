@@ -5,7 +5,7 @@ by Tomas Svarovsky
 You do not have credentials. You only have SST and would like to still make some requests.
 
 ==== Solution
-Super Secure Token is a token that allows to access you our APIs in a nonrestricted matter without necessarily knowing username and password. Take note that currently you do not have access to whole API. Things like interacting with DSS and Staging Storage still need username and pass. We are trying t resolve the issue.
+Super Secure Token is a token that allows you to access our APIs in a nonrestricted matter without necessarily knowing username and password. Take note that currently you do not have access to whole API. Things like interacting with DSS and Staging Storage still need username and pass. We are trying to resolve the issue.
 First you need to have SST token. There are several ways how to obtain it. Here is one using SDK
 
 [source,ruby]
@@ -28,4 +28,4 @@ end
 
 ==== Discussion
 
-Never share the token with other people. It is the same thing as you name and password. You can do almost everything with it.
+Never share the token with other people. It is the same thing as for your name and password. You can do almost everything with it.
