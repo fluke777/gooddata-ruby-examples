@@ -5,7 +5,7 @@ by Tomas Svarovsky
 You have users added in organization (domain). You would like to add them into the project.
 
 ==== Prerequisites
-You have to have a user who is an admin of an organization. If you do not have that please consult (xy) to get one.
+You have to have a user who is an admin of an organization. If you do not have that please consult recipe XY to get one.
 Works only with 0.6.12 and higher
 
 ==== Solution
