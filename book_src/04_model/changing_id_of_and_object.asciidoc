@@ -1,0 +1,39 @@
+=== Changing identifier of and object
+by Tomas Svarovsky
+
+==== Problem
+You moved an attribute in your model and you would like to change the identifier so it follows the convention.
+
+==== Solution
+You can change identifier on any object not just parts of model like attribute or/and fact. But in case of objects that play part in a model are the ones where naming really matter because some tools rely on convention in the naming.
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+GoodData.with_connection do |c|
+  project = GoodData.use('project_id')
+
+  # We find the attribute we want to change
+  # Here I just pick the first one
+  attribute = project.attributes.first
+
+  # We have a look at the current value.
+  # Let's say it is 'attr.users.region'
+  puts attribute.identifier
+
+  # We change the value
+  attribute.identifier = 'attr.salesmen.region'
+  attribute.save
+
+  # If we refresh the value from server
+  # we get a new value 'attr.salesmen.region'
+  attribute.reload!
+  puts attribute.identifier
+
+end
+----
+
+==== Discussion

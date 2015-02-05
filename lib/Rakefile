@@ -1,0 +1,97 @@
+# encoding: UTF-8
+
+require 'rubygems'
+require 'bundler/setup'
+
+require_relative './erb_helper'
+
+desc 'Build book'
+task :build do
+  Rake::Task['build_book_structure'].invoke
+  Rake::Task['erb'].invoke
+  Rake::Task['add_asciidoc_structure'].invoke
+  Rake::Task['book'].invoke
+  Rake::Task['clean_generated'].invoke
+end
+
+desc 'Add asciidoc stuff'
+task :add_asciidoc_structure do
+  require 'active_support/all'
+
+  FileUtils.cd('..') do
+    chapters = FileList.new('*').reject {|f| File.file?(f)} - ['lib', 'tmp', 'src', 'data', 'book_src']
+    chapters.each do |chapter|
+      FileUtils.cd(chapter) do |dir|
+        File.open('chapter.asciidoc', 'w') do |f|
+          f.puts "== #{chapter.titleize}"
+          (FileList.new('*.asciidoc') - ['chapter.asciidoc']).each do |article|
+            f.puts ""
+            f.puts "include::#{article}[]"
+          end
+        end
+      end
+    end
+
+    # generate book.asciidoc
+    File.open('book.asciidoc', 'w') do |f|
+      f.puts ":bookseries: cookbook"
+      f.puts ":toc:"
+      f.puts "= GoodData SDK Cookbook"
+      f.puts ""
+
+      chapters.each do |chapter|
+        f.puts "include::#{chapter}/chapter.asciidoc[]"
+        f.puts ""
+      end
+    end
+  end
+end
+
+
+desc 'Build structure'
+task :build_book_structure do
+  FileUtils.cd('..') do
+    system('cp -r book_src/* .')
+  end
+end
+
+desc 'Generates the book'
+task :book do
+  FileUtils.cd('..') do
+    system 'asciidoctor -d book book.asciidoc'
+  end
+end
+
+desc 'Run continuous integration'
+task :ci do
+  Rake::Task['build'].invoke
+end
+
+desc 'Clean generated stuff'
+task :clean_generated do
+  FileUtils.cd('..') do
+    FileList['**/chapter.asciidoc'].each{ |f| File.delete(f) }
+    File.delete('book.asciidoc')
+    FileUtils.rm_rf('src')
+    ErbHelper.new.clean_source
+  end
+end
+
+
+task 'Run ERB preprocessing'
+task :erb do
+  FileUtils.cd('..') do
+    ErbHelper.new.run
+  end
+end
+
+task :usage do
+  puts 'No rake task specified, use rake -T to list them'
+end
+
+desc 'Run watcher for automatic building'
+task :watch do
+  system 'watchr script/build.rb'
+end
+
+task :default => [:usage]

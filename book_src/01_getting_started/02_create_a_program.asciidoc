@@ -1,0 +1,12 @@
+=== Creating a program that you can run in a non-interactive fashion
+by Tomas Svarovsky
+
+==== Problem
+You created a program by building it up in an interactive manner but now you would like to put it into a file to be able to run it
+
+==== Solution
+
+gooddata -p project_pid -U john.doe@example.com -P secret project jack-in
+
+==== Discussion
+You should be in an interactive session where you can evaluate your ideas and verify that everything works in an fast fashion before you put your program in a file that is much more useful for a batch oriented execution

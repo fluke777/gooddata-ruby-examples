@@ -1,0 +1,25 @@
+=== Adding a schedule to a deployed process
+by Tomas Svarovsky
+
+==== Problem
+You have a process deployed but you would like to add a schedule to it so the process is executed regularly
+
+==== Solution
+You can easily add a time based schedule to any process. There are couple of advantages to a schedule as compared to a process. Schedule executions are logged and logs are kept around for some time (~10 days). Also schedule keeps list of parameters so you create it once and you do not need to care about them anymore.
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+GoodData.with_connection do |client|
+  project = GoodData.use('project_id')
+  process = project.deploy_process('./hello_world.rb',
+                                   type: :ruby,
+                                   name: "example_process")
+  process.create_schedule('0 15 * * *', 'hello_world.rb', params: { param1: 'a', param2: 'b' })
+end
+----
+
+==== Discussion

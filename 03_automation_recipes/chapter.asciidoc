@@ -1,5 +1,0 @@
-== 03 Automation Recipes
-
-include::all_projects.asciidoc[]
-
-include::speeding_things_up.asciidoc[]

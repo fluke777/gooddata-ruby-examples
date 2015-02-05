@@ -1,0 +1,40 @@
+=== Deploying a process programmatically
+by Tomas Svarovsky
+
+==== Problem
+You would like to deploy a CloudConnect or Ruby process to GoodData platform.
+
+==== Solution
+SDK allows you to deploy a process. Just point it to a file, directory or a zipped archive and that will be deployed.
+Below is an example of CloudConnect process deployment. When deploying CloudConnect processes you typically want to take the whole folder structure of a CloudConnect project and deploy it. So you will want to pass either path to the root folder of the structure or you can zip it first and pass just a path to the zip archive. The below example points to the root folder of a CloudConnect project.
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+GoodData.with_connection do |client|
+project = GoodData.use('project_id')
+project.deploy_process('./path/to_cloud_connect_directory',
+name: 'Test ETL Process')
+end
+----
+
+By default the process is deployed as a CloudConnect process. You can deploy as other types by providing specific type (CloudConnect is the only one generally available).
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+GoodData.with_connection do |client|
+project = GoodData.use('project_id')
+project.deploy_process('./path/to_cloud_connect_process.rb',
+type: :ruby,
+name: 'Test ETL Process')
+end
+---- 
+
+This also shows you how to deploy a single file.

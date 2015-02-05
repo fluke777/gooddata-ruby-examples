@@ -1,0 +1,22 @@
+=== You would like to compute an existing report 
+by Tomas Svarovsky
+
+==== Problem
+You have a report saved and you would like to get the numbers programatically.
+
+==== Solution
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+GoodData.with_connection do |c|
+  project = GoodData.use('project_id')
+  puts project.reports(1234).execute
+end
+----
+
+==== Discussion
+

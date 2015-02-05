@@ -1,0 +1,74 @@
+=== Creating a project from blueprint
+by Tomas Svarovsky
+
+==== Problem
+You would like to spin up a project from a blueprint.
+
+==== Solution
+
+[source,ruby]
+----
+require 'gooddata'
+
+GoodData.with_connection do |c|
+
+  blueprint = GoodData::Model::ProjectBuilder.create("my_bp") do |p|
+    p.add_date_dimension("created_on")
+    p.add_dataset("stuff") do |d|
+      d.add_date("created_on")
+      d.add_fact("some_number")
+    end
+  end
+
+  c.create_project_from_blueprint(blueprint, auth_token: TOKEN)
+end
+----
+
+==== Discussion
+Let's have a look at couple of other variations.
+
+We saw how to spin up a project with a blueprint defined inline. The blueprint was defined with a Ruby DSL. While this is our preferred way of doing things when we work inline there are couple of other things you might consider.
+
+You might want to store the blueprint definition in a file. There is an obvious benefit and drawback to doing that in Ruby. The benefit is that it is programmable so you can do more magic if you need to. The biggest drawback is that is tying you to Ruby and this cannot be used by other tooling easily. We also provide another variant of the blueprint and that is its JSON serialization. While not programmable it is much more open to other languages so it is our preferred way to use it when we save to file.
+
+This is a blueprint in JSON that is the same as the one in previous example. Store it to a file and let's spin up a project using this one.
+
+[source,javascript]
+----
+{
+  "title": "my_bp",
+  "datasets": [
+    {
+      "name": "stuff",
+      "columns": [
+        {
+          "type": "date",
+          "name": "created_on"
+        },
+        {
+          "type": "fact",
+          "name": "some_number"
+        }
+      ]
+    }
+  ],
+  "date_dimensions": [
+    {
+      "name": "created_on"
+    }
+  ]
+}
+----
+
+The script is basically the same. The only change is the way we obtain the blueprint.
+
+[source,ruby]
+----
+require 'gooddata'
+
+GoodData.with_connection do |c|
+  blueprint = GoodData::Model::ProjectBlueprint.from_json('your_file.json')
+  c.create_project_from_blueprint(blueprint, auth_token: TOKEN)
+end
+----
+

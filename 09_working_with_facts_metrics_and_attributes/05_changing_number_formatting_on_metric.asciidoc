@@ -1,0 +1,23 @@
+=== Changing number formatting of a metric
+
+by Tomas Svarovsky
+
+==== Problem
+You have a project and you would like to update formatting of all metrics programatically. They are currently formatted for dollars but you would like to change this to Euros.
+
+==== Solution
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+client = GoodData.connect
+project = client.projects(PROJECT_ID)
+project.metrics.pmap do |metric|
+  metric.content['format'] = metric.content['format'].gsub('$', '€')
+  metric.save
+end
+
+----

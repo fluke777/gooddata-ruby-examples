@@ -15,9 +15,12 @@ require 'gooddata'
 
 GoodData.with_connection('user', 'password') do |c|
   project = GoodData.use('project_pid')
-  cloned_project = project.clone(title: 'New title', auth_token: 'token')
+  cloned_project = project.clone(title: 'New title',
+                                 auth_token: 'token',
+                                 users: false,
+                                 data: true)
 end
 ----
 
 ==== Discussion
-There are two options that you can specify. You can pick if you want to clone just structures or also data. Default is with data. Also you can pick if you want to transfer all users to the new project. Default is no users. Only you will be in the new project.
+There are two options that you can specify. You can pick if you want to clone just structures or also data. Default is with data. Also you can pick if you want to transfer all users to the new project. Default is no users. Only you will be in the new project. In the example above we explicitly specified the params so you can see how it works.

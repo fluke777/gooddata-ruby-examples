@@ -2,23 +2,42 @@
 
 require 'erb'
 require 'pathname'
+require 'pry'
 
 class ErbHelper
   BASE_DIR = File.join(File.dirname(__FILE__), '..')
 
-  FILES = [
-    './src/_general/*.rb.erb',
-    './**/*.rb.erb',
-    './**/*.asciidoc.erb',
-  ]
+  def grab_files
+    # FILES = [
+    #   './src/_general/*.rb.erb',
+    #   './**/*.rb.erb',
+    #   './**/*.asciidoc.erb',
+    # ]
+
+    FileList["**/*.erb"] - FileList['book_src/**/*'] - FileList['data/**/*'] - FileList['tmp/**/*']
+  end
 
   def clean
-    FILES.each do |files|
+    grab_files.each do |files|
+      
       Dir[files].each do |f|
         tfile = f.gsub(/\.erb/, '')
         if File.exist? tfile
           puts "Deleting #{tfile}"
           FileUtils.rm_rf tfile
+        end
+      end
+    end
+  end
+
+  def clean_source
+    grab_files.each do |files|
+      
+      Dir[files].each do |f|
+        tfile = f.gsub(/\.erb/, '')
+        if File.exist? tfile
+          puts "Deleting #{f}"
+          FileUtils.rm_rf f
         end
       end
     end
@@ -63,7 +82,7 @@ class ErbHelper
 
 
   def run
-    FILES.each do |files|
+    grab_files.each do |files|
       process(files)
     end
   end

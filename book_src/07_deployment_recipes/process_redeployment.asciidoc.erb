@@ -1,0 +1,10 @@
+=== Redeploying an existing process programmatically
+by Tomas Svarovsky
+
+==== Problem
+You would like to redeploy a CloudConnect or Ruby process to GoodData platform.
+
+==== Solution
+SDK allows you a nice shorthand for redeploying a process all you have to do is to get a handle on the process. Here we are using hypothetical process id, but you can use any traditional way to get a process. Take note that the same deployment rules as in `project.deploy_process` apply. You can deploy a directory file or a compressed package.
+
+<%= render_ruby 'src/07_deployment_recipes/redeploy_process.rb' %>

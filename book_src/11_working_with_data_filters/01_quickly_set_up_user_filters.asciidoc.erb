@@ -1,0 +1,21 @@
+=== Quickly setting simple Data filter
+
+by Tomas Svarovsky
+
+==== Problem
+You would like to set a User filter for one or two users. It can be a one off.
+
+==== Solution
+SDK offers couple of convenience features for doing this. Let's first recap what we need to set up a filter.
+
+In this case we will be setting a simple filter in a general shape of
+
+  WHERE city IN (san francisco, prague, amsterdam)
+
+* We need to know the values we wold like to set. In our case that is (san francisco, prague, amsterdam)
+* We need to know what label these values are related to. In our case city
+* We also need to know which user you would like to assign this filter. In this case use yourself or any other user that you like.
+
+Although we present this as an executable script this is something that is best done interactively so do not fear to jack in to a project and follow along.
+
+<%= render_ruby 'src/11_working_with_data_filters/create_filters_interactively.rb' %>

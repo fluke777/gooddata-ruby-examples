@@ -1,7 +1,0 @@
-== 08 Working with reports
-
-include::comparing_reports.asciidoc[]
-
-include::computing_existing_report.asciidoc[]
-
-include::resetting_color_mapping.asciidoc[]

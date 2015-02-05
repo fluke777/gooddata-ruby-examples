@@ -1,0 +1,41 @@
+=== Quickly setting simple Data filter
+
+by Tomas Svarovsky
+
+==== Problem
+You would like to set a User filter for a bunch of users. As a source you have a CSV
+
+==== Solution
+SDK offers couple of convenience features for doing this. Let's first recap what we need to set up a filter.
+
+In this case we will be setting a simple filter in a general shape of
+
+  WHERE city IN (san francisco, prague, amsterdam)
+
+* We need to know the values we wold like to set. In our case that is (san francisco, prague, amsterdam)
+* We need to know what label these values are related to. In our case city
+* We also need to know which user you would like to assign this filter. In this case use yourself or any other user that you like.
+
+Let's say we would like to set up these specific values
+
+  ['john.doe@example.com', 'San Francisco', 'Amsterdam']
+  ['jane.doe@example.com', 'San Francisco', 'Prague']
+
+The CSV we are going to take values from should contain the information about the first and the third item from the list. It could look like this (let's also assume the file will be in the file named data.csv).
+
+[source]
+----
+login,city
+john.doe@example.com,San Francisco
+john.doe@example.com,Amsterdam
+jane.doe@example.com,San Francisco
+jane.doe@example.com,Prague
+----
+
+<%= render_ruby 'src/11_working_with_data_filters/filters_from_columnar_csv.rb' %>
+
+===== Preconditions
+Several things has to be true for this code to work correctly
+
+* All the users are present in the project
+* All the values are present in the data loaded in the project

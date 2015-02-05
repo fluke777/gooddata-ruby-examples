@@ -1,0 +1,10 @@
+=== Find a metric that uses another object
+by Tomas Svarovsky
+
+==== Problem
+You want to find an object that uses a certain known object. Imagine that you would like to find all metrics using a particular attribute.
+
+==== Solution
+
+
+==== Discussion

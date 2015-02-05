@@ -1,0 +1,57 @@
+=== Executing a deployed process
+by Tomas Svarovsky
+
+==== Problem
+You would like to execute a process without a schedule.
+
+==== Solution
+SDK allows you to execute a process. This is not something that you should do regularly since you have to specify the parameters during execution and logs are not kept for individual runs but it might be occasionally useful.
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+GoodData.with_connection do |client|
+  project = GoodData.use('project_id')
+  process = project.deploy_process('./hello_world.rb',
+                                   type: :ruby,
+                                   name: "example_process")
+  process.execute('hello_world.rb', params: { param1: 'a', param2: 'b' })
+end
+----
+
+==== Discussion
+
+There are also couple of other useful tricks. You might execute arbitrary process that is already deployed. You just need to get a handle of it. Let's find a process based on its id. There is actually a helper for that.
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+GoodData.with_connection do |client|
+  project = GoodData.use('project_id')
+  process = project.processes('6a75759f-2a76-49c8-af18-ad3bc58fc65e')
+  process.execute('hello_world.rb', params: { param1: 'a', param2: 'b' })
+end
+----
+
+Or you can try to find by other things. One of the more common will probably going to be name of the process.
+
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+GoodData.with_connection do |client|
+  project = GoodData.use('project_id')
+  process = project.processes.find { |p| p.name == 'hello_world' }
+  process.execute('hello_world.rb', params: { param1: 'a', param2: 'b' })
+end
+----
+
+If you do not know what the executable is you can look it up by using `process.executables`. We recommend using the same for all processes like `main.grf` (for CloudConnect) or `main.rb`.

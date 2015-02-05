@@ -1,0 +1,22 @@
+=== Computing number of lines in a dataset
+by Tomas Svarovsky
+
+==== Problem
+Very often there is a need to know how many lines there are in a dataset.
+
+==== Solution
+This is not so easy to do on UI. You basically have to find the main attribute on a dataset and then create a report. It is much easier to use SDK for a shortcut.
+
+[source,ruby]
+----
+require 'gooddata'
+
+GoodData.with_connection do |c|
+  project = GoodData.use('project_id')
+  blueprint = project.blueprint
+  count = blueprint.datasets.first.count(project)
+  puts "Number of lines in a dataset is #{count}"
+end
+----
+
+==== Discussion
