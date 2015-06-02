@@ -2,6 +2,9 @@
 
 require 'gooddata'
 
-GoodData.with_connection('user', 'password') do |c|
-  GoodData::Project.create(title: 'This is my new project', auth_token: 'TOKEN')
-end
+client = GoodData.connect
+project = client.create_project(title: 'My project title', auth_token: 'PROJECT_CREATION_TOKEN')
+
+# after some time the project is created and you can start working with it
+puts project.uri
+puts project.title # => 'My project title'

@@ -6,7 +6,29 @@ You would like to spin up a project from a blueprint.
 
 ==== Solution
 
-<%= render_ruby 'src/06_working_with_projects/project_from_blueprint.rb' %>
+[source,ruby]
+----
+# encoding: utf-8
+
+require 'gooddata'
+
+client = GoodData.connect
+
+blueprint = GoodData::Model::ProjectBlueprint.build("my_bp") do |p|
+  p.add_date_dimension('created_on')
+
+  p.add_dataset('stuff') do |d|
+    d.add_date('created_on', dataset: 'created_on')
+    d.add_fact('some_number')
+  end
+end
+
+project = client.create_project_from_blueprint(blueprint, auth_token: 'token')
+
+# After the project is created (might take a while) you can start using it
+project.title # => "my_bp"
+project.datasets.count # => 2
+----
 
 ==== Discussion
 Let's have a look at couple of other variations.
@@ -28,6 +50,7 @@ This is a blueprint in JSON that is the same as the one in previous example. Sto
         {
           "type": "date",
           "name": "created_on"
+          "dataset": "created_on"
         },
         {
           "type": "fact",
@@ -48,11 +71,13 @@ The script is basically the same. The only change is the way we obtain the bluep
 
 [source,ruby]
 ----
+# encoding: utf-8
+
 require 'gooddata'
 
 GoodData.with_connection do |c|
   blueprint = GoodData::Model::ProjectBlueprint.from_json('your_file.json')
   c.create_project_from_blueprint(blueprint, auth_token: TOKEN)
 end
-----
 
+----

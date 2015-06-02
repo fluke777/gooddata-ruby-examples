@@ -10,10 +10,9 @@ You need to rename the project.
 ----
 require 'gooddata'
 
-GoodData.with_connection('user', 'password') do |c|
-  project = GoodData.use('project_id')
-  project.title = "New and much better title"
-  project.save
-end
+client = GoodData.connect
+project = client.projects('project_id')
+project.title = "New and much better title"
+project.save
 
 ----
