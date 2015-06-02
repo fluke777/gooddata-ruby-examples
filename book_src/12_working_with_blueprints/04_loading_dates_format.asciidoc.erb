@@ -1,0 +1,15 @@
+=== Uploading dates in your data and specifying its format
+by Tomas Svarovsky
+
+==== Problem
+You need to upload dates but you have a nonstandard formatting
+
+==== Solution
+
+You can specify a date loading format in your blueprint. Even if you do not specify it the default (MM/dd/yyyy) is used
+
+<%= render_ruby 'src/12_working_with_blueprints/specifying_date_format.rb' %>
+
+
+Note couple of things
+We did not have to update the project. to be able to load dates in a different format. Date format information is used only during the data upload and the model is unaffected. This is something to think about when you are inferring the blueprint from the model using `project.blueprint`. This information is not persisted in the project.

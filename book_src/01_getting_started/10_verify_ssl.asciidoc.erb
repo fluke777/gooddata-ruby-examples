@@ -1,0 +1,12 @@
+=== Disabling SSL verification
+by Tomas Svarovsky
+
+==== Problem
+You would like to disable SSL verification when using SDK against a server that does not have proper certificates
+
+==== Solution
+You can switch of SSL validating like this. This is especially useful when you are using SDK against testing or development servers.
+
+<%= render_ruby 'src/01_getting_started/verify_ssl.rb' %>
+
+==== Discussion
