@@ -6,14 +6,23 @@ You would like to specify a different data type in a blueprint
 
 ==== Solution
 
-Blueprints are easy to create programmatically and even to merge them together. In this example we will create a simple blueprint with one dataset and then add an additional field into blueprint and update the model.
+Each column in blueprint is eventually translated into a physical column in a database. While the defaults are typically what you want sometimes it might be useful to override them. You can specify the data type with gd_data_type clause.
 
 <%= render_ruby 'src/12_working_with_blueprints/updating_project_1.rb' %>
 
 ==== Discussion
 
-In the example above we have created a new model and updated it right away. This is not a typical situation however and there are couple of things that you need to be aware of.
+Data types that are supported are for facts
 
-It is more common that you would like to gradually update the model in an existing project as the new requirements arrive. For that to be possible you have to take the "old" blueprint from some place where it is persisted. We will show a basic way how to save a blueprint to a file.
+DECIMAL(m, d)
+INTEGER
+LONG
 
-<%= render_ruby 'src/12_working_with_blueprints/updating_project_2.rb' %>
+and for attributes
+VARCHAR(n)
+
+The case where this is very useful are
+
+- if you use values from smaller domain (for example small integers) you can leverage appropriate data type to save space and speed things up
+- if you are using number with atypical precision - the default is DECIMAL(12,2)
+- sometimes it might be good
