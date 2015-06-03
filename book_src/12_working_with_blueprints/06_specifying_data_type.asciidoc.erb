@@ -8,21 +8,18 @@ You would like to specify a different data type in a blueprint
 
 Each column in blueprint is eventually translated into a physical column in a database. While the defaults are typically what you want sometimes it might be useful to override them. You can specify the data type with gd_data_type clause.
 
-<%= render_ruby 'src/12_working_with_blueprints/updating_project_1.rb' %>
+<%= render_ruby 'src/12_working_with_blueprints/specyfing_blueprint_with_datatype.rb' %>
 
 ==== Discussion
 
-Data types that are supported are for facts
+These data types that are supported on the platform
 
 DECIMAL(m, d)
 INTEGER
 LONG
-
-and for attributes
 VARCHAR(n)
 
 The case where this is very useful are
 
-- if you use values from smaller domain (for example small integers) you can leverage appropriate data type to save space and speed things up
-- if you are using number with atypical precision - the default is DECIMAL(12,2)
-- sometimes it might be good
+- if you use values from smaller domain (for example integers) you can leverage appropriate data type to save space and speed things up
+- if you are using facts with atypical precision (the default is DECIMAL(12,2)) you can leverage decimal type with larger precision
