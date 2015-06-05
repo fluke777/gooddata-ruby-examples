@@ -612,11 +612,6 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_setting_data_permissions_from_csv_oriented_in_a_row_way">Setting Data permissions from CSV oriented in a row way</a></li>
 </ul>
 </li>
-<li><a href="#_12_working_with_blueprints">12 Working With Blueprints</a>
-<ul class="sectlevel2">
-<li><a href="#_working_with_folders">Working with folders</a></li>
-</ul>
-</li>
 </ul>
 </div>
 </div>
@@ -858,7 +853,7 @@ require <span class="string"><span class="delimiter">'</span><span class="conten
 <div class="sect3">
 <h4 id="_solution_5">Solution</h4>
 <div class="paragraph">
-<p>Super Secure Token is a token that allows to access you our APIs in a nonrestricted matter without necessarily knowing username and password. Take note that currently you do not have access to whole API. Things like interacting with DSS and Staging Storage still need username and pass. We are trying t resolve the issue.
+<p>Super Secure Token is a token that allows you to access our APIs in a nonrestricted matter without necessarily knowing username and password. Take note that currently you do not have access to whole API. Things like interacting with DSS and Staging Storage still need username and pass. We are trying to resolve the issue.
 First you need to have SST token. There are several ways how to obtain it. Here is one using SDK</p>
 </div>
 <div class="listingblock">
@@ -901,7 +896,7 @@ client.connection.sst_token
 <div class="sect3">
 <h4 id="_solution_6">Solution</h4>
 <div class="paragraph">
-<p>Temporary token is a token that allows to access you certain resources for a limited amount of time.</p>
+<p>Temporary token is a token that allows you to access certain resources for a limited amount of time.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -953,9 +948,9 @@ client.connection.sst_token
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="ruby">params = <span class="constant">JSON</span>.parse(<span class="constant">File</span>.read(<span class="string"><span class="delimiter">'</span><span class="content">/path/to/file))
-client = GoodData.connect(params)
-puts client.projects.count</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="ruby">params = <span class="constant">JSON</span>.parse(<span class="constant">File</span>.read(<span class="string"><span class="delimiter">'</span><span class="content">/path/to/file</span><span class="delimiter">'</span></span>)
+client = <span class="constant">GoodData</span>.connect(params)
+puts client.projects.count</code></pre>
 </div>
 </div>
 </div>
@@ -1021,7 +1016,7 @@ require <span class="string"><span class="delimiter">'</span><span class="conten
 </div>
 </div>
 <div class="paragraph">
-<p>This has a benefit that you have access to project only inside the block. Once the block is left you are 'disconnected to the project. If you are using several projects in one script this is a way to go to be sure you are not reaching somewhere you do not want to.</p>
+<p>This has a benefit that you have access to project only inside the block. Once the block is left you are disconnected from the project. If you are using several projects in one script this is a way to make sure you are not reaching somewhere you do not want to.</p>
 </div>
 <div class="paragraph">
 <p>There are other more conventional ways to do the same thing.</p>
@@ -1142,7 +1137,7 @@ require <span class="string"><span class="delimiter">'</span><span class="conten
 
 <span class="constant">GoodData</span>.with_connection(<span class="string"><span class="delimiter">'</span><span class="content">user</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">password</span><span class="delimiter">'</span></span>) <span class="keyword">do</span> |client|
   <span class="constant">GoodData</span>.with_project(<span class="string"><span class="delimiter">'</span><span class="content">project_pid</span><span class="delimiter">'</span></span>) <span class="keyword">do</span> |project|
-    project.member?(<span class="string"><span class="delimiter">'</span><span class="content"> jane.doe @example.com </span><span class="delimiter">'</span></span>)
+    project.member?(<span class="string"><span class="delimiter">'</span><span class="content">jane.doe@example.com</span><span class="delimiter">'</span></span>)
   <span class="keyword">end</span>
 <span class="keyword">end</span></code></pre>
 </div>
@@ -1360,7 +1355,7 @@ require <span class="string"><span class="delimiter">'</span><span class="conten
 
 <span class="comment"># Connect to platform using credentials</span>
 <span class="constant">GoodData</span>.with_connection(<span class="string"><span class="delimiter">'</span><span class="content">user</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">password</span><span class="delimiter">'</span></span>) <span class="keyword">do</span> |client|
-  domain = client.domain(<span class="string"><span class="delimiter">'</span><span class="content">gooddata-tomas-svarovsky</span><span class="delimiter">'</span></span>)
+  domain = client.domain(<span class="string"><span class="delimiter">'</span><span class="content">my-domain</span><span class="delimiter">'</span></span>)
   users = domain.users
   pp users
 <span class="keyword">end</span></code></pre>
@@ -1382,7 +1377,7 @@ require <span class="string"><span class="delimiter">'</span><span class="conten
 <div class="sect3">
 <h4 id="_prerequisites_7">Prerequisites</h4>
 <div class="paragraph">
-<p>You have to have a user who is an admin of an organization. If you do not have that please consult (xy) to get one.</p>
+<p>You have to have a user who is an admin of an organization. If you do not have that please consult recipe XY to get one.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3832,74 +3827,10 @@ project.add_data_permissions(filters)</code></pre>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_12_working_with_blueprints">12 Working With Blueprints</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_working_with_folders">Working with folders</h3>
-<div class="paragraph">
-<p>by Tomas Svarovsky</p>
-</div>
-<div class="sect3">
-<h4 id="_problem_62">Problem</h4>
-<div class="paragraph">
-<p>You would like to use folders in your model to help dlarity on UI</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_solution_62">Solution</h4>
-<div class="paragraph">
-<p>By default all the attributes and facts are automatically assigned a folder based on name of the dataset. This name is either generated from name or the title is used if defined. You can also override this and specify its own folder for particular field.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="ruby"><span class="comment"># encoding: utf-8</span>
-
-require <span class="string"><span class="delimiter">'</span><span class="content">gooddata</span><span class="delimiter">'</span></span>
-
-client = <span class="constant">GoodData</span>.connect
-
-blueprint = <span class="constant">GoodData</span>::<span class="constant">Model</span>::<span class="constant">ProjectBlueprint</span>.build(<span class="string"><span class="delimiter">&quot;</span><span class="content">my_bp</span><span class="delimiter">&quot;</span></span>) <span class="keyword">do</span> |p|
-  p.add_dataset(<span class="string"><span class="delimiter">'</span><span class="content">sales_reps</span><span class="delimiter">'</span></span>, <span class="key">title</span>: <span class="string"><span class="delimiter">'</span><span class="content">Awesome Sales Reps</span><span class="delimiter">'</span></span>) <span class="keyword">do</span> |d|
-    d.add_anchor(<span class="string"><span class="delimiter">'</span><span class="content">id</span><span class="delimiter">'</span></span>)
-    d.add_attribute(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
-  <span class="keyword">end</span>
-
-  p.add_dataset(<span class="string"><span class="delimiter">'</span><span class="content">regions</span><span class="delimiter">'</span></span>) <span class="keyword">do</span> |d|
-    d.add_anchor(<span class="string"><span class="delimiter">'</span><span class="content">id</span><span class="delimiter">'</span></span>)
-    d.add_attribute(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
-  <span class="keyword">end</span>
-
-  p.add_dataset(<span class="string"><span class="delimiter">'</span><span class="content">opportunities</span><span class="delimiter">'</span></span>) <span class="keyword">do</span> |d|
-    d.add_fact(<span class="string"><span class="delimiter">'</span><span class="content">amount</span><span class="delimiter">'</span></span>, <span class="key">folder</span>: <span class="string"><span class="delimiter">'</span><span class="content">My Special Folder</span><span class="delimiter">'</span></span>)
-    d.add_reference(<span class="string"><span class="delimiter">'</span><span class="content">sales_rep_id</span><span class="delimiter">'</span></span>, <span class="key">dataset</span>: <span class="string"><span class="delimiter">'</span><span class="content">sales_reps</span><span class="delimiter">'</span></span>)
-    d.add_reference(<span class="string"><span class="delimiter">'</span><span class="content">region_id</span><span class="delimiter">'</span></span>, <span class="key">dataset</span>: <span class="string"><span class="delimiter">'</span><span class="content">regions</span><span class="delimiter">'</span></span>)
-  <span class="keyword">end</span>
-<span class="keyword">end</span>
-
-project = client.create_project_from_blueprint(blueprint, <span class="key">auth_token</span>: <span class="string"><span class="delimiter">'</span><span class="content">token_id</span><span class="delimiter">'</span></span>)
-
-<span class="comment"># Currently there is not support in SDK to directly explore folders but we can reach to API directly</span>
-<span class="comment"># You can also go to the project in your browser and look for folders there</span>
-client.get(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">#{</span>project.md[<span class="string"><span class="delimiter">'</span><span class="content">query</span><span class="delimiter">'</span></span>]<span class="inline-delimiter">}</span></span><span class="content">/dimensions</span><span class="delimiter">&quot;</span></span>)[<span class="string"><span class="delimiter">'</span><span class="content">query</span><span class="delimiter">'</span></span>][<span class="string"><span class="delimiter">'</span><span class="content">entries</span><span class="delimiter">'</span></span>].map {|i| i[<span class="string"><span class="delimiter">'</span><span class="content">title</span><span class="delimiter">'</span></span>]} <span class="comment"># =&gt; [&quot;Sales Reps&quot;, &quot;Regions&quot;, &quot;Opportunities&quot;]</span>
-
-client.get(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">#{</span>project.md[<span class="string"><span class="delimiter">'</span><span class="content">query</span><span class="delimiter">'</span></span>]<span class="inline-delimiter">}</span></span><span class="content">/folders</span><span class="delimiter">&quot;</span></span>)[<span class="string"><span class="delimiter">'</span><span class="content">query</span><span class="delimiter">'</span></span>][<span class="string"><span class="delimiter">'</span><span class="content">entries</span><span class="delimiter">'</span></span>].map {|i| i[<span class="string"><span class="delimiter">'</span><span class="content">title</span><span class="delimiter">'</span></span>]} <span class="comment"># =&gt; [&quot;My Special Folder&quot;]</span></code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_discussion_40">Discussion</h4>
-<div class="paragraph">
-<p>One thing to note is that folders are not removed if you would publish a model where a previously used folder would stay empty.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-06-05 00:40:28 PDT
+Last updated 2015-06-05 00:52:01 PDT
 </div>
 </div>
 </body>
