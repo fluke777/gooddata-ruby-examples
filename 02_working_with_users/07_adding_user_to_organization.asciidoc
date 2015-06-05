@@ -5,7 +5,7 @@ by Tomas Korcak
 You would like to add a user to organization programmatically
 
 ==== Prerequisites
-You have to have a user who is an admin of an organization. If you do not have that please consult (xy) to get one.
+You have to have a user who is an admin of an organization. If you do not have that please consult recipe XY to get one.
 
 ==== Solution
 

@@ -20,7 +20,7 @@ GoodData.with_connection('user', 'password') do |client|
 end
 ----
 
-This has a benefit that you have access to project only inside the block. Once the block is left you are 'disconnected to the project. If you are using several projects in one script this is a way to go to be sure you are not reaching somewhere you do not want to.
+This has a benefit that you have access to project only inside the block. Once the block is left you are disconnected from the project. If you are using several projects in one script this is a way to make sure you are not reaching somewhere you do not want to.
 
 There are other more conventional ways to do the same thing.
 [source,ruby]

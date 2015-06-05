@@ -14,7 +14,7 @@ GoodData.with_connection('user', 'password') do |client|
     GoodData.with_project(project) do |project|
 
       reports_to_validate = project.reports
-                              .select { |reports| report.updated_at > 2.weeks.ago }
+                              .select { |report| report.updated_at > 2.weeks.ago }
                               .select { |report| report.revisions.count > 1 }
 
       GoodData::Report.find_by_tag('to_be_checked', :project => project).each do |report|
