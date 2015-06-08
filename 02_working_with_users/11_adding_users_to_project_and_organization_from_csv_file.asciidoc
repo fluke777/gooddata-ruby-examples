@@ -33,6 +33,7 @@ require 'gooddata'
 client = GoodData.connect
 
 project = client.projects('project_pid')
+domain = client.domain('domain_name')
 
 users = []
 CSV.foreach('data.csv', :headers => true, :return_headers => false) do |row|
