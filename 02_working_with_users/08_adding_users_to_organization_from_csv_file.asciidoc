@@ -24,16 +24,16 @@ First let's have a look how to implement an addition with having the file as in 
 
 require 'gooddata'
 
-GoodData.with_connection('user', 'password') do |client|
+client = GoodData.connect
 
-  domain = client.domain('domain-name')
-  users = []
-  CSV.foreach('data.csv', :headers => true, :return_headers => false) do |row|
-    users << row.to_hash.symbolize_keys
-  end
-
-  domain.create_users(users)
+domain = client.domain('domain-name')
+users = []
+CSV.foreach('data.csv', :headers => true, :return_headers => false) do |row|
+  users << row.to_hash.symbolize_keys
 end
+
+domain.create_users(users)
+
 ----
 
 Sometimes though what you have is that the file that comes from the system has different headers than would be ideal. One possible thing you can do is to transform it in a separate ETL process or you can change the code slightly to compensate. In the next code snippet we will show you how to do just that.
@@ -53,20 +53,20 @@ This is the code add those users to a domain.
 
 require 'gooddata'
 
-GoodData.with_connection('user', 'password') do |client|
+client = GoodData.connect
 
-  headers = ["UserLogin", "FirstName", "LastName", "UserPassword"]
-  new_headers = [:login, :first_name, :last_name, :password]
+headers = ["UserLogin", "FirstName", "LastName", "UserPassword"]
+new_headers = [:login, :first_name, :last_name, :password]
 
-  domain = client.domain('domain-name')
-  users = []
-  CSV.foreach('data.csv', :headers => true, :return_headers => false) do |row|
-    new_data = new_headers.zip(row.to_hash.values_at(*headers))
-    users << Hash[new_data]
-  end
-
-  domain.create_users(users)
+domain = client.domain('domain-name')
+users = []
+CSV.foreach('data.csv', :headers => true, :return_headers => false) do |row|
+  new_data = new_headers.zip(row.to_hash.values_at(*headers))
+  users << Hash[new_data]
 end
+
+domain.create_users(users)
+
 ----
 
 Notice that the bulk of the code is the same. The only differences are that we defined `headers` which contain the values of the headers in the CSV file provided. Variable `new_headers` provide the corresponding values for those headers that the SDK expects. Take not that the position is important and the headers for corresponding columns has to be in the same order in both variables.

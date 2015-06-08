@@ -4,10 +4,12 @@ require 'gooddata'
 
 client = GoodData.connect
 
-domain = client.domain('domain-name')
+project = client.projects('project_pid')
+
 users = []
 CSV.foreach('data.csv', :headers => true, :return_headers => false) do |row|
   users << row.to_hash.symbolize_keys
 end
 
 domain.create_users(users)
+project.import_users(users, domain: domain)

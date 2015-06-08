@@ -10,7 +10,8 @@ You have to have a user who is an admin of an organization. If you do not have t
 We assume that you have a file with details handy. The file can look for example like this
 
     login,first_name,last_name,password,role
-    john@example.com,John,Doe,12345678,admin
+    john@example.com,John,Smith,12345678,admin
+    john.doe@example.com,John,Doe,87616393,admin
 
 The headers we used are defaults. If you have different ones you will have to do some mangling. Minimal information that you have to provide for the user creation to be successful is login.
 
@@ -23,21 +24,4 @@ SDK has a method import_users that takes care of all the details and does exactl
 * Be careful so you do not lock yourself (etl administrator) out of the project. Be sure to add him/her to whitelist if he is not intrinsically in the data.
 * Note that above data will not work. Currently there is a constraint that each user has to have unique login across all users in GoodData. It is likely that there already is a `john@example.com` somewhere so change the test data accordingly.
 
-[source,ruby]
-----
-# encoding: utf-8
-
-require 'gooddata'
-
-GoodData.with_connection('user', 'password') do |client|
-
-  project = client.projects('project_pid')
-
-  users = []
-  CSV.foreach('data.csv', :headers => true, :return_headers => false) do |row|
-    users << row.to_hash.symbolize_keys
-  end
-
-  project.import_users(users, domain: domain, whitelists: [/john\.doe\/])
-end
-----
+<%= render_ruby 'src/02_working_with_users/add_users_domain_and_project.rb' %>

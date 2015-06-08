@@ -19,13 +19,13 @@ Disable and enable particular user in GoodData project
 require 'gooddata'
 
 # Connect to platform using credentials
-GoodData.with_connection do |c|
-  project = c.projects(PROJECT_PID)
-  user = project.member('john@example.com')
-  user.disable
-  # You can reenable the user again
-  user.enable
-end
+client = GoodData.connect
+project = client.projects(PROJECT_PID)
+
+user = project.member('john@example.com')
+user.disable
+# You can reenable the user again
+user.enable
 
 ----
 
@@ -38,16 +38,15 @@ Disable all users in GoodData project
 require 'gooddata'
 
 # Connect to platform using credentials
-GoodData.with_connection do |c|
-  project = c.projects(PROJECT_PID)
+client = GoodData.connect
+project = client.projects(PROJECT_PID)
 
-  # We collect all users minus current user
-  # so we do not disable ourselves from the project
-  users_to_disable = project.users.reject { |u| u.login == c.user.login }
+# We collect all users minus current user
+# so we do not disable ourselves from the project
+users_to_disable = project.users.reject { |u| u.login == client.user.login }
 
-  # disable all users
-  users_to_disable.pmap {|u| u.disable}
-end
+# disable all users
+users_to_disable.pmap {|u| u.disable}
 
 ----
 
@@ -60,17 +59,17 @@ If you want to keep more than one user you can do something like this
 require 'gooddata'
 
 # Connect to platform using credentials
-GoodData.with_connection do |c|
-  project = c.projects(PROJECT_PID)
+client = GoodData.connect
+project = client.projects(PROJECT_PID)
 
-  keepers = ['john@example.com', c.user.login]
+keepers = ['john@example.com', client.user.login]
 
-  # We collect all users and remove those from the keepers array
-  users_to_disable = project.users.reject { |u| keepers.include?(u.login) }
+# We collect all users and remove those from the keepers array
+users_to_disable = project.users.reject { |u| keepers.include?(u.login) }
 
-  # disable all users
-  users_to_disable.pmap { |u| u.disable }
-end
+# disable all users
+users_to_disable.pmap { |u| u.disable }
+
 ----
 
 ==== Discussion
