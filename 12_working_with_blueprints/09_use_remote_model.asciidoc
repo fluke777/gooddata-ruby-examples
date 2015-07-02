@@ -1,9 +1,6 @@
 === Working with a remote model
 by Tomas Svarovsky
 
-==== Notes
-- comes out with remote blueprints
-
 ==== Problem
 Often you are working with a project that was not created using SDK so you do not have a textual representation of the logical model. You would still like to work with it in the same manner as it was a local blueprint.
 

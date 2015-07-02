@@ -17,21 +17,24 @@ require 'gooddata'
 client = GoodData.connect
 project = client.projects('project_id')
 
-blueprint = GoodData::Model::ProjectBlueprint.build("my_blueprint") do |p|
-  p.add_date_dimension("committed_on")
+blueprint = GoodData::Model::ProjectBlueprint.build('Acme project') do |p|
+  p.add_date_dimension('committed_on')
 
-  p.add_dataset("repos") do |d|
-    d.add_anchor("repo_id")
-    d.add_attribute("name")
-    d.add_date('opportunity_comitted', dataset: 'committed_on', format: "dd-MM-yyyy")
+  p.add_dataset('dataset.commits') do |d|
+    d.add_anchor('attr.commits.id')
+    d.add_fact('fact.commits.lines_changed')
+	  d.add_attribute('attr.commits.name')
+    d.add_label('label.commits.name', reference: 'attr.commits.name')
+    d.add_date('committed_on', :dataset => 'committed_on')
   end
 end
 
-project = client.create_project_from_blueprint(bp, auth_token: '')
+project = client.create_project_from_blueprint(bp, auth_token: 'token')
 
 update = GoodData::Model::ProjectBlueprint.build("update") do |p|
-  p.add_dataset("repos") do |d|
-    d.add_attribute("region")
+  p.add_dataset("dataset.commits") do |d|
+    d.add_attribute("attr.commits.repo")
+    d.add_label('label.commits.repo', reference: 'attr.commits.repo')
   end
 end
 
@@ -39,8 +42,7 @@ end
 project.update_from_blueprint(blueprint.merge(update))
 
 # now you can look at the model and verify there is new attribute present
-project.attributes.find {|a| a.title == 'Region'}
-
+project.attributes('attr.commits.repo')
 ----
 
 ==== Discussion
@@ -62,8 +64,9 @@ BLUEPRINT_FILE = 'blueprint_file.json'
 blueprint = GoodData::Model::ProjectBlueprint.from_json(BLUEPRINT_FILE)
 
 update = GoodData::Model::ProjectBlueprint.build('update') do |p|
-  p.add_dataset('repos') do |d|
-    d.add_attribute('region')
+  p.add_dataset("dataset.commits") do |d|
+    d.add_attribute("attr.commits.repo")
+    d.add_label('label.commits.repo', reference: 'attr.commits.repo')
   end
 end
 

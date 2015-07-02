@@ -14,70 +14,217 @@ require 'gooddata'
 
 client = GoodData.connect
 
-blueprint = GoodData::Model::ProjectBlueprint.build("my_bp") do |p|
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
   p.add_date_dimension('created_on')
 
-  p.add_dataset('stuff') do |d|
-    d.add_date('created_on', dataset: 'created_on')
-    d.add_fact('some_number')
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_date('created_on')
+    d.add_fact('fact.users.some_number')
   end
 end
+
+blueprint.valid? # => true
 
 project = client.create_project_from_blueprint(blueprint, auth_token: 'token')
 
 # After the project is created (might take a while) you can start using it
-project.title # => "my_bp"
+project.title # => "My project from blueprint"
 project.datasets.count # => 2
+project.facts('fact.users.some_number').identifier # => 'fact.users.some_number'
+
 ----
+
+This created a project with very simple model with just 2 datasets. One is date dimension. The other is a typical fact table.
 
 ==== Discussion
-Let's have a look at couple of other variations.
+Let's have a look at couple of other variations and more complex examples. As a baseline I will use this model that models organizational structure of a small company. I will explain all the key pieces and possible variations as we go.
 
-We saw how to spin up a project with a blueprint defined inline. The blueprint was defined with a Ruby DSL. While this is our preferred way of doing things when we work inline there are couple of other things you might consider.
+===== Defining identifiers
+Majority of the objects defined in the bluepritn will end up as object in metadata server in the project. Each of theses objects has its URI, object id (this number is part of the URI) and identifier which is a textual id. URI and object id are created automatically during creation of a model and you cannot influence them in any way but you have to define the identifiers. This is also the first parameter in majority of the add_... commands. Namely
 
-You might want to store the blueprint definition in a file. There is an obvious benefit and drawback to doing that in Ruby. The benefit is that it is programmable so you can do more magic if you need to. The biggest drawback is that is tying you to Ruby and this cannot be used by other tooling easily. We also provide another variant of the blueprint and that is its JSON serialization. While not programmable it is much more open to other languages so it is our preferred way to use it when we save to file.
+  add_anchor
+  add_label
+  add_dataset
+  add_fact
+  add_attribute
 
-This is a blueprint in JSON that is the same as the one in previous example. Store it to a file and let's spin up a project using this one.
+When you see this in the blueprint
 
-[source,javascript]
-----
-{
-  "title": "my_bp",
-  "datasets": [
-    {
-      "name": "stuff",
-      "columns": [
-        {
-          "type": "date",
-          "name": "created_on"
-          "dataset": "created_on"
-        },
-        {
-          "type": "fact",
-          "name": "some_number"
-        }
-      ]
-    }
-  ],
-  "date_dimensions": [
-    {
-      "name": "created_on"
-    }
-  ]
-}
-----
+  p.add_dataset('dataset.users')
 
-The script is basically the same. The only change is the way we obtain the blueprint.
+It means that later you would be able to do 
+
+  project.datasets('dataset.users') # this will search all the datasets and returns you the one with identifier 'dataset.users'.
+
+Similarly
 
 [source,ruby]
 ----
-# encoding: utf-8
+d.add_fact('fact.users.some_number')
+----
 
-require 'gooddata'
+will result into you be able to do
 
-GoodData.with_connection do |c|
-  blueprint = GoodData::Model::ProjectBlueprint.from_json('your_file.json')
-  c.create_project_from_blueprint(blueprint, auth_token: TOKEN)
+[source,ruby]
+----
+project.facts('fact.users.some_number') # this will search all the facts and returns you the one with identifier 'fact.users.some_number'.
+----
+
+Identifier can be anything. The only condition is that it has to be unique in the context of a project. No 2 objects may have the same identifer. That being said it is useful to have some kind of convention how you assign the identifiers.
+
+Exception to this rule are references and date_references which we will discuss separately.
+
+===== Defining attributes
+When you define attributes through add_attribute you have to remember to add at least one label to that particular attribute
+
+[source,ruby]
+----
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_attribute('attr.users.name')
+  end
 end
 
+blueprint.valid? # => false
+blueprint.validate # => [{:type=>:attribute_without_label, :attribute=>"attr.users.name"}]
 ----
+
+You can do it like this
+
+[source,ruby]
+----
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_attribute('attr.users.name')
+    d.add_label('label.users.name.full_name', reference: 'attr.users.name')
+    d.add_label('label.users.name.abbreviated_name', reference: 'attr.users.name')
+  end
+end
+
+blueprint.valid? # => true
+blueprint.validate # => []
+----
+
+===== Defining anchors/connection_points
+Since you might argue that anchor (you might also hear term connection point which means the same thing) is a special case of the attribute lets' talk about it a little. Yes it is true but there are additional things that make it that special one. There can be only one anchor in each dataset
+
+[source,ruby]
+----
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_anchor('attr.users.id2')
+  end
+end
+
+blueprint.valid? # => false
+blueprint.validate # => [{:type=>:more_than_on_anchor, :dataset=>"dataset.users"}]
+----
+
+Anchor is the thing you can reference from other datasets. If you want to do that you have to define a label. Anchor can have multiple labels same as attribute. We strongly recommend not to define anchor with labels on fact tabels (they are usually not referenced). The only exception to this rule is if you need to upsert data.
+
+[source,ruby]
+----
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_label('label.users.id', reference: 'attr.users.id')
+    d.add_attribute('attr.users.name')
+    d.add_label('label.users.name.full_name', reference: 'attr.users.name')
+  end
+
+  p.add_dataset('dataset.sales') do |d|
+    d.add_anchor('attr.sales.id')
+    d.add_fact('fact.sales.amount')
+    d.add_reference('dataset.users')
+  end
+end
+
+blueprint.valid? # => true
+----
+
+Good question is "why you have to define the anchor if it has no labels?". The reason is that you still need the underlying attribute if you want to construct the count metric for fact table to answere question "How many lines there is in the 'dataset.sales' dataset?". You would do it as follows with SDK (with previous model).
+
+[source,ruby]
+----
+project.attributes("attr.sales.id").create_metric.execute
+----
+
+===== Defining date dimensions
+In all tools and even in MAQL date dimensions are reprseneted as single unit (as in blueprint builder add_date_dimension). This is great for readability but might be misleading. The fact is that date dimension is several datasets that contain typically ~18 attributes. If you understand this it is probably not surprising that the parameter to 'add_date_dimension' is not an identifier but a name that will be used in titles and identifiers of all attributes. It is also a name that you can use in add_date function. Here is an example.
+
+[source,ruby]
+----
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
+  p.add_date_dimension('created_on')
+
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_fact('fact.users.some_number')
+    d.add_date('created_on')
+  end
+end
+----
+
+===== Defining references
+Typically in your model you need to reference other datasets. This is expressed in the blueprint builder with add_reference function. It takes only one parameter which is the identifier of referenced dataset. References do not have identifier since they are not represented as objects on the platform.
+
+[source,ruby]
+----
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_attribute('attr.users.name')
+    d.add_label('attr.users.name.full_name', reference: 'attr.users.name')
+  end
+
+  p.add_dataset('dataset.sales') do |d|
+    d.add_anchor('attr.sales.id')
+    d.add_fact('fact.sales.amount')
+    d.add_reference('dataset.users')
+  end
+end
+
+blueprint.valid? # => true
+----
+
+===== Defining date references
+This is very similar to references but there is additional hint that you are referencing date dimension.
+
+[source,ruby]
+----
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
+  p.add_date_dimension('created_on')
+
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_date('created_on')
+    d.add_fact('fact.users.some_number')
+  end
+end
+----
+
+===== Defining Titles
+If you would build and open in the browser any of the models we built up to this point you probably noticed that the titles look off. Since we did not define anything SDK tries to do the right thing and tries to use the identifiers (with some tweaking for readability) as titles. While this might work it is usually not what you want. You can easily fix that by defining the titles explicitly.
+
+[source,ruby]
+----
+blueprint = GoodData::Model::ProjectBlueprint.build("My project from blueprint") do |p|
+  p.add_date_dimension('created_on')
+
+  p.add_dataset('dataset.users') do |d|
+    d.add_anchor('attr.users.id')
+    d.add_date('created_on')
+    d.add_fact('fact.users.amount', title: 'Amount Sold')
+  end
+end
+
+project.facts('fact.users.amount').title # => 'Amount Sold'
+
+----
+
+===== Specifying data types
+Ocasionally the default datatypes of the fields will not be what you want. You can redefine them for both labels and facts as exepected with parameter :gd_data_type. There is more information about this in its owne recipe.

@@ -9,8 +9,9 @@ BLUEPRINT_FILE = 'blueprint_file.json'
 blueprint = GoodData::Model::ProjectBlueprint.from_json(BLUEPRINT_FILE)
 
 update = GoodData::Model::ProjectBlueprint.build('update') do |p|
-  p.add_dataset('repos') do |d|
-    d.add_attribute('region')
+  p.add_dataset("dataset.commits") do |d|
+    d.add_attribute("attr.commits.repo")
+    d.add_label('label.commits.repo', reference: 'attr.commits.repo')
   end
 end
 

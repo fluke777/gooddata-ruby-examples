@@ -18,10 +18,3 @@ include::06_working_with_projects/chapter.asciidoc[]
 include::07_deployment_recipes/chapter.asciidoc[]
 
 include::08_working_with_reports/chapter.asciidoc[]
-
-include::99_temp/chapter.asciidoc[]
-
-include::lib/chapter.asciidoc[]
-
-include::src/chapter.asciidoc[]
-

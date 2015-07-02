@@ -1,0 +1,21 @@
+=== Moving fields in blueprint
+by Tomas Svarovsky
+
+==== Problem
+I created a model and now found out that I would like to move a field to different dataset.
+
+==== Solution
+We will use variation of our hr demo model. If you look for that model you can see that we have an attribute defined on departments dataset. This is how you originally created the project and everything was fine but you realized that you would like to assign the region to people not departments.
+
+Before we start changing things go to the project and create a report which breaks SUM(Amount) by Region.
+
+<%= render_ruby 'src/12_working_with_blueprints/moving_fields_around_part1.rb' %>
+
+Since we moved the attribute we have to load new data for it in the context of new dataset
+
+<%= render_ruby 'src/12_working_with_blueprints/moving_fields_around_part2.rb' %>
+
+Now go ahead and check the original report. Yes, it is still working fine. It gives different numbers since we changed the meaning of it but we did not break anything.
+
+==== Discussion
+

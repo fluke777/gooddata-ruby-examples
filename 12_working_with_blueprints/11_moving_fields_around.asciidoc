@@ -1,0 +1,38 @@
+=== Moving fields in blueprint
+by Tomas Svarovsky
+
+==== Problem
+I created a model and now found out that I would like to move a field to different dataset.
+
+==== Solution
+We will use variation of our hr demo model. If you look for that model you can see that we have an attribute defined on departments dataset. This is how you originally created the project and everything was fine but you realized that you would like to assign the region to people not departments.
+
+Before we start changing things go to the project and create a report which breaks SUM(Amount) by Region.
+
+[source,ruby]
+----
+client = GoodData.connect
+project = client.projects('PROJECT_ID')
+
+blueprint = project.blueprint
+blueprint.move!('attr.department.region', 'dataset.department', 'dataset.employee')
+project.update_from_blueprint(blueprint)
+
+----
+
+Since we moved the attribute we have to load new data for it in the context of new dataset
+
+[source,ruby]
+----
+employee_data_with_dep = [
+    ['label.employee.id','label.employee.fname','label.employee.lname','dataset.department', 'label.department.region'],
+    ['e1','Sheri','Nowmer','d1', 'North America'],
+    ['e2','Derrick','Whelply','d2', 'Europe']
+]
+project.upload(employee_data_with_dep, blueprint, 'dataset.employee')
+
+----
+
+Now go ahead and check the original report. Yes, it is still working fine. It gives different numbers since we changed the meaning of it but we did not break anything.
+
+==== Discussion
