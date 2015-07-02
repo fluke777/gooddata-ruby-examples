@@ -20,6 +20,7 @@ GoodData.with_connection('user', 'password') do |client|
     project.member?('jane.doe@example.com')
   end
 end
+
 ----
 
 ==== Discussion

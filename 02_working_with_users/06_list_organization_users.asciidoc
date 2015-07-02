@@ -21,4 +21,5 @@ GoodData.with_connection('user', 'password') do |client|
   users = domain.users
   pp users
 end
+
 ----
