@@ -4661,10 +4661,13 @@ client.get(<span class="string"><span class="delimiter">&quot;</span><span class
 <div class="sect3">
 <h4 id="_solution_70">Solution</h4>
 <div class="paragraph">
-<p>We will use variation of our hr demo model. If you look for that model you can see that we have an attribute defined on departments dataset. This is how you originally created the project and everything was fine but you realized that you would like to assign the region to people not departments.</p>
+<p>We will use variation of our hr demo model. If you look at that model you can see that we have an attribute <strong>region</strong> defined on departments dataset. This is how you (hypothetically) originally created the project and everything was fine but you realized that you would like to assign the region to people dataset not departments dataset.</p>
 </div>
 <div class="paragraph">
-<p>Before we start changing things go to the project and create a report which breaks SUM(Amount) by Region.</p>
+<p>Before we start changing things spin up the project go inside the project and create a report which show <strong>SUM(Amount)</strong> broken by <strong>Region</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s move the attribute between datasets.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4677,7 +4680,7 @@ project.update_from_blueprint(blueprint)</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Since we moved the attribute we have to load new data for it in the context of new dataset</p>
+<p>Since we moved the attribute we have to load new data for it in the context of new dataset. The old dataset (departments) is fine since we just removed a column.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4991,7 +4994,7 @@ refactored_blueprint.datasets(<span class="string"><span class="delimiter">'</sp
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-07-01 23:16:23 PDT
+Last updated 2015-07-01 23:21:18 PDT
 </div>
 </div>
 </body>
