@@ -4830,9 +4830,8 @@ require <span class="string"><span class="delimiter">'</span><span class="conten
 <div class="paragraph">
 <p>Let&#8217;s have a look at two hypothetical but very common scenarios that you probably encountered in during career.</p>
 </div>
-<div class="paragraph">
-<p>"One Dataset problem"</p>
-</div>
+<div class="sect4">
+<h5 id="__one_dataset_problem">"One Dataset problem"</h5>
 <div class="paragraph">
 <p>Lets' say you have model like this</p>
 </div>
@@ -4862,20 +4861,17 @@ require <span class="string"><span class="delimiter">'</span><span class="conten
 </div>
 </div>
 <div class="paragraph">
-<p>There is one problem. We should definitely extract the attribute from 'dataset.sales' dataset somewhere else. Also the anchor for this dataset has a lable. Unless we do not have specific reson for it we should extract it somewhere else.</p>
+<p>There is one problem. We should definitely extract the attribute from 'dataset.sales' dataset somewhere else. Also the anchor for this dataset has a label. Unless we do not have specific reason for it we should extract it somewhere else.</p>
 </div>
 <div class="paragraph">
 <p>We can try to ask SDK to help us</p>
 </div>
-<div class="paragraph">
-<p>refactored_blueprint = blueprint.refactor_split_df('dataset.sales')</p>
-</div>
-<div class="paragraph">
-<p>Let&#8217;s have a look around</p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="ruby">refactored_blueprint.datasets.map(&amp;<span class="symbol">:title</span>)
+<pre class="CodeRay highlight"><code data-lang="ruby">refactored_blueprint = blueprint.refactor_split_df(<span class="string"><span class="delimiter">'</span><span class="content">dataset.sales</span><span class="delimiter">'</span></span>)
+
+<span class="comment"># Let's have a look around</span>
+refactored_blueprint.datasets.map(&amp;<span class="symbol">:title</span>)
 
 refactored_blueprint.datasets.map {|d| [d.title, d.id]}
 =&gt; [[<span class="string"><span class="delimiter">&quot;</span><span class="content">Sale Reps</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.reps</span><span class="delimiter">&quot;</span></span>],
@@ -4883,45 +4879,52 @@ refactored_blueprint.datasets.map {|d| [d.title, d.id]}
     [<span class="string"><span class="delimiter">&quot;</span><span class="content">Department</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.sales</span><span class="delimiter">&quot;</span></span>],
     [<span class="string"><span class="delimiter">&quot;</span><span class="content">Dataset.Sales Dim</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.sales_dim</span><span class="delimiter">&quot;</span></span>]]
 
-<span class="constant">So</span> there is a new dataset
+<span class="comment"># So there is a new dataset</span>
+<span class="comment"># If we print it out in repl</span>
 refactored_blueprint.datasets(<span class="string"><span class="delimiter">'</span><span class="content">dataset.sales_dim</span><span class="delimiter">'</span></span>)
-{
-  <span class="symbol">:type</span>=&gt;<span class="symbol">:dataset</span>,
-  <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.sales_dim</span><span class="delimiter">&quot;</span></span>,
-  <span class="symbol">:columns</span>=&gt;
-   [{<span class="symbol">:type</span>=&gt;<span class="symbol">:anchor</span>, <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">vymysli_id</span><span class="delimiter">&quot;</span></span>},
-    {<span class="symbol">:type</span>=&gt;<span class="symbol">:label</span>, <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">label.vymysli_id</span><span class="delimiter">&quot;</span></span>, <span class="symbol">:reference</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">vymysli_id</span><span class="delimiter">&quot;</span></span>},
-    {<span class="symbol">:type</span>=&gt;<span class="symbol">:attribute</span>, <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">attr.sales.stage</span><span class="delimiter">&quot;</span></span>, <span class="symbol">:title</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">Stage</span><span class="delimiter">&quot;</span></span>},
-    {<span class="symbol">:type</span>=&gt;<span class="symbol">:label</span>,
-     <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">label.sales.stage</span><span class="delimiter">&quot;</span></span>,
-     <span class="symbol">:title</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">Stage Name</span><span class="delimiter">&quot;</span></span>,
-     <span class="symbol">:reference</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">attr.sales.stage</span><span class="delimiter">&quot;</span></span>}]}</code></pre>
+<span class="comment"># prints</span>
+<span class="comment">#</span>
+<span class="comment"># {</span>
+<span class="comment">#   :type=&gt;:dataset,</span>
+<span class="comment">#   :id=&gt;&quot;dataset.sales_dim&quot;,</span>
+<span class="comment">#   :columns=&gt;</span>
+<span class="comment">#    [{:type=&gt;:anchor, :id=&gt;&quot;vymysli_id&quot;},</span>
+<span class="comment">#     {:type=&gt;:label, :id=&gt;&quot;label.vymysli_id&quot;, :reference=&gt;&quot;vymysli_id&quot;},</span>
+<span class="comment">#     {:type=&gt;:attribute, :id=&gt;&quot;attr.sales.stage&quot;, :title=&gt;&quot;Stage&quot;},</span>
+<span class="comment">#     {:type=&gt;:label,</span>
+<span class="comment">#      :id=&gt;&quot;label.sales.stage&quot;,</span>
+<span class="comment">#      :title=&gt;&quot;Stage Name&quot;,</span>
+<span class="comment">#      :reference=&gt;&quot;attr.sales.stage&quot;}]}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can see that there is stage attribute right there. And it prepared an anchor for us. The naming definitely needs touch ups (User should be able to specify the ids somehow). Now let&#8217;s have a alook what happened to sales dataset</p>
+<p>You can see that there is stage attribute right there. And it prepared an anchor for us. The naming definitely needs touch ups (User should be able to specify the ids somehow) but the structure is there. Now let&#8217;s have a look what happened to sales dataset</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="ruby">refactored_blueprint.datasets(<span class="string"><span class="delimiter">'</span><span class="content">dataset.sales</span><span class="delimiter">'</span></span>)
-
-{<span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.sales</span><span class="delimiter">&quot;</span></span>,
-   <span class="symbol">:type</span>=&gt;<span class="symbol">:dataset</span>,
-   <span class="symbol">:columns</span>=&gt;
-    [{<span class="symbol">:type</span>=&gt;<span class="symbol">:anchor</span>, <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">attr.sales.id</span><span class="delimiter">&quot;</span></span>, <span class="symbol">:title</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">Sale Id</span><span class="delimiter">&quot;</span></span>},
-     {<span class="symbol">:type</span>=&gt;<span class="symbol">:label</span>,
-      <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">label.sales.id</span><span class="delimiter">&quot;</span></span>,
-      <span class="symbol">:reference</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">attr.sales.id</span><span class="delimiter">&quot;</span></span>,
-      <span class="symbol">:title</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">Sales tracking number</span><span class="delimiter">&quot;</span></span>},
-     {<span class="symbol">:type</span>=&gt;<span class="symbol">:fact</span>, <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">fact.sales.amount</span><span class="delimiter">&quot;</span></span>, <span class="symbol">:title</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">Amount</span><span class="delimiter">&quot;</span></span>},
-     {<span class="symbol">:type</span>=&gt;<span class="symbol">:reference</span>, <span class="symbol">:dataset</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.regions</span><span class="delimiter">&quot;</span></span>},
-     {<span class="symbol">:type</span>=&gt;<span class="symbol">:reference</span>, <span class="symbol">:dataset</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.reps</span><span class="delimiter">&quot;</span></span>},
-     {<span class="symbol">:type</span>=&gt;<span class="symbol">:reference</span>, <span class="symbol">:dataset</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.sales_dim</span><span class="delimiter">&quot;</span></span>}]</code></pre>
+<span class="comment"># prints</span>
+<span class="comment">#</span>
+<span class="comment"># {:id=&gt;&quot;dataset.sales&quot;,</span>
+<span class="comment">#    :type=&gt;:dataset,</span>
+<span class="comment">#    :columns=&gt;</span>
+<span class="comment">#     [{:type=&gt;:anchor, :id=&gt;&quot;attr.sales.id&quot;, :title=&gt;&quot;Sale Id&quot;},</span>
+<span class="comment">#      {:type=&gt;:label,</span>
+<span class="comment">#       :id=&gt;&quot;label.sales.id&quot;,</span>
+<span class="comment">#       :reference=&gt;&quot;attr.sales.id&quot;,</span>
+<span class="comment">#       :title=&gt;&quot;Sales tracking number&quot;},</span>
+<span class="comment">#      {:type=&gt;:fact, :id=&gt;&quot;fact.sales.amount&quot;, :title=&gt;&quot;Amount&quot;},</span>
+<span class="comment">#      {:type=&gt;:reference, :dataset=&gt;&quot;dataset.regions&quot;},</span>
+<span class="comment">#      {:type=&gt;:reference, :dataset=&gt;&quot;dataset.reps&quot;},</span>
+<span class="comment">#      {:type=&gt;:reference, :dataset=&gt;&quot;dataset.sales_dim&quot;}]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can see that the attribute is gone with labels. Only facts remained. New reference was added so the reports should still be working. This might seems just like a minor thing but once you start creating more complex models with multiple stars you find this tqchnique a necessity so why not automate it.</p>
+<p>You can see that the attribute is gone with labels. Only facts remained. New reference was added so the reports should still be working. This might seems just like a minor thing but once you start creating more complex models with multiple stars you find this techique a necessity so why not automate it.</p>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_multiple_facts_in_one_dataset">Multiple facts in one dataset</h5>
 <div class="paragraph">
 <p>Another problem we will look at is splitting fact tables because of facts. Conside this model</p>
 </div>
@@ -4944,32 +4947,37 @@ refactored_blueprint.datasets(<span class="string"><span class="delimiter">'</sp
 </div>
 </div>
 <div class="paragraph">
-<p>What you want to do is have a look at how many shipments were ordered and shipped on particular day. But if you keep the facts in one dataset you will have all kinds of trouble with nil values. Much better is to split the fact tables in two.</p>
+<p>What you want to do is have a look at how many shipments were ordered and shipped on particular day. But if you keep the facts in one dataset you will have all kinds of trouble with nil values. Much better is to split the fact tables in two. Again we can try doing that with SDK</p>
+</div>
+<div class="paragraph">
+<p>Note: it seems it currently does not work with date references. We need to update that so I ommitted it in the example so it works</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="ruby">refactored_blueprint = blueprint.refactor_split_facts(<span class="string"><span class="delimiter">'</span><span class="content">dataset.orders_fact</span><span class="delimiter">'</span></span>, [<span class="string"><span class="delimiter">'</span><span class="content">fact.dataset.orders_fact.amount_shipped</span><span class="delimiter">'</span></span>], <span class="string"><span class="delimiter">'</span><span class="content">dataset.orders_shipped_fact</span><span class="delimiter">'</span></span>)
+<pre class="CodeRay highlight"><code data-lang="ruby"><span class="comment"># you define which dataset you would like to split. Secnd parameter is list of facts you would like to move and the last one is the id of the new dataset</span>
+refactored_blueprint = blueprint.refactor_split_facts(<span class="string"><span class="delimiter">'</span><span class="content">dataset.orders_fact</span><span class="delimiter">'</span></span>, [<span class="string"><span class="delimiter">'</span><span class="content">fact.dataset.orders_fact.amount_shipped</span><span class="delimiter">'</span></span>], <span class="string"><span class="delimiter">'</span><span class="content">dataset.orders_shipped_fact</span><span class="delimiter">'</span></span>)
 
 <span class="comment"># Again Let's explore</span>
 refactored_blueprint.datasets.count <span class="comment"># =&gt; 3</span>
 
 refactored_blueprint.datasets.map {|d| [d.title, d.id]}
-=&gt; [[<span class="string"><span class="delimiter">&quot;</span><span class="content">Orders Dimension</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.orders_dim</span><span class="delimiter">&quot;</span></span>],
-    [<span class="string"><span class="delimiter">&quot;</span><span class="content">Orders Fact Table</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.orders_fact</span><span class="delimiter">&quot;</span></span>],
-    [<span class="string"><span class="delimiter">&quot;</span><span class="content">Dataset.Orders Shipped Fact</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.orders_shipped_fact</span><span class="delimiter">&quot;</span></span>]]
+<span class="comment"># =&gt; [[&quot;Orders Dimension&quot;, &quot;dataset.orders_dim&quot;],</span>
+<span class="comment">#     [&quot;Orders Fact Table&quot;, &quot;dataset.orders_fact&quot;],</span>
+<span class="comment">#     [&quot;Dataset.Orders Shipped Fact&quot;, &quot;dataset.orders_shipped_fact&quot;]]</span>
 
 <span class="comment"># There is a new dataset &quot;dataset.orders_shipped_fact&quot;</span>
 refactored_blueprint.datasets(<span class="string"><span class="delimiter">'</span><span class="content">dataset.orders_shipped_fact</span><span class="delimiter">'</span></span>)
-<span class="comment"># =&gt;</span>
- {
-   <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.orders_shipped_fact</span><span class="delimiter">&quot;</span></span>,
-   <span class="symbol">:type</span>=&gt;<span class="symbol">:dataset</span>,
-   <span class="symbol">:columns</span>=&gt; [
-     {<span class="symbol">:type</span>=&gt;<span class="symbol">:anchor</span>, <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.orders_shipped_fact.id</span><span class="delimiter">&quot;</span></span>},
-     {<span class="symbol">:type</span>=&gt;<span class="symbol">:fact</span>,
-      <span class="symbol">:id</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">fact.dataset.orders_fact.amount_shipped</span><span class="delimiter">&quot;</span></span>,
-      <span class="symbol">:title</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">Amount Shipped</span><span class="delimiter">&quot;</span></span>},
-     {<span class="symbol">:type</span>=&gt;<span class="symbol">:reference</span>, <span class="symbol">:dataset</span>=&gt;<span class="string"><span class="delimiter">&quot;</span><span class="content">dataset.orders_dim</span><span class="delimiter">&quot;</span></span>}]}</code></pre>
+<span class="comment"># prints</span>
+<span class="comment">#</span>
+<span class="comment"># {</span>
+<span class="comment">#   :id=&gt;&quot;dataset.orders_shipped_fact&quot;,</span>
+<span class="comment">#   :type=&gt;:dataset,</span>
+<span class="comment">#   :columns=&gt; [</span>
+<span class="comment">#     {:type=&gt;:anchor, :id=&gt;&quot;dataset.orders_shipped_fact.id&quot;},</span>
+<span class="comment">#     {:type=&gt;:fact,</span>
+<span class="comment">#      :id=&gt;&quot;fact.dataset.orders_fact.amount_shipped&quot;,</span>
+<span class="comment">#      :title=&gt;&quot;Amount Shipped&quot;},</span>
+<span class="comment">#     {:type=&gt;:reference, :dataset=&gt;&quot;dataset.orders_dim&quot;}]}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4980,9 +4988,10 @@ refactored_blueprint.datasets(<span class="string"><span class="delimiter">'</sp
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-07-01 23:06:43 PDT
+Last updated 2015-07-01 23:16:23 PDT
 </div>
 </div>
 </body>
