@@ -36,7 +36,7 @@ class ErbHelper
       Dir[files].each do |f|
         tfile = f.gsub(/\.erb/, '')
         if File.exist? tfile
-          puts "Deleting #{f}"
+          # puts "Deleting #{f}"
           FileUtils.rm_rf f
         end
       end
@@ -74,7 +74,7 @@ class ErbHelper
 
       res = erb.result b
       File.open(filename.gsub(/\.erb/, ''), 'wt') do |f|
-        puts "Processing #{filename}"
+        # puts "Processing #{filename}"
         f.write res.chomp
       end
     end

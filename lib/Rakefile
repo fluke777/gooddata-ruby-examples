@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'bundler/setup'
+require 'open3'
 
 require_relative './erb_helper'
 
@@ -59,7 +60,12 @@ end
 desc 'Generates the book'
 task :book do
   FileUtils.cd('..') do
-    system 'asciidoctor -d book book.asciidoc'
+    stdin, stdout, stderr, wait_thr = Open3.popen3('asciidoctor -d book book.asciidoc')
+    puts stdout.gets(nil)
+    stdout.close
+    puts stderr.gets(nil)
+    stderr.close
+    exit_code = wait_thr.value
   end
 end
 

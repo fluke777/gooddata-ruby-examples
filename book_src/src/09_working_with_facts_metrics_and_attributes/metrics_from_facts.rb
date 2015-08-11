@@ -10,5 +10,8 @@ GoodData.with_connection do |c|
     metric.save
     res = metric.execute
     puts res
+
+    # Default aggregation is SUM but you can also specify a different one
+    metric = fact.create_metric(:title => "Sum of [#{fact.identifier}]", type: :min)
   end
 end
